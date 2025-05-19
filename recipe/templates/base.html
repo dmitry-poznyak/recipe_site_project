@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Recipe Site</title>
+</head>
+
+<body>
+    <h1><a href="{% url 'home' %}">Сайт рецептов</a></h1>
+
+    {% if user.is_authenticated %}
+    <p>
+        Привет, {{ user.username }} |
+        <a href="{% url 'add_recipe' %}">Добавить рецепт</a> |
+        <form action="{% url 'logout' %}" method="post" style="display:inline;">
+            {% csrf_token %}
+            <button type="submit" style="background:none; border:none; color:blue; cursor:pointer; text-decoration:underline;">
+                Выйти
+            </button>
+        </form>
+    </p>
+    {% else %}
+    <p>
+        <a href="{% url 'login' %}">Войти</a> |
+        <a href="{% url 'register' %}">Регистрация</a>
+    </p>
+    {% endif %}
+
+    <hr> {% block content %}{% endblock %}
+</body>
+
+</html>

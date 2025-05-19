@@ -1,10 +1,16 @@
-{% extends 'recipe/base.html' %} {% block content %}
-<h2>{{ recipe.title }}</h2>
-<img src="{{ recipe.image.url }}" width="300"><br>
-<p><strong>Описание:</strong> {{ recipe.description }}</p>
-<p><strong>Шаги:</strong><br>{{ recipe.steps|linebreaks }}</p>
-<p><strong>Время:</strong> {{ recipe.cooking_time }} мин.</p>
-<p><strong>Категории:</strong> {{ recipe.categories.all|join:", " }}</p>
+{% extends 'base.html' %} {% block content %}
+<h1>{{ recipe.title }}</h1>
 
-{% if recipe.author == user %}
-<a href="{% url 'edit_recipe' recipe.id %}">Редактировать</a> {% endif %} {% endblock %}
+{% if recipe.image %}
+<img src="{{ recipe.image.url }}" alt="Изображение рецепта" style="max-width: 400px;"> {% endif %}
+
+<p><strong>Автор:</strong> {{ recipe.author.username }}</p>
+<p><strong>Описание:</strong> {{ recipe.description }}</p>
+<p><strong>Шаги приготовления:</strong> {{ recipe.steps }}</p>
+<p><strong>Время приготовления:</strong> {{ recipe.cooking_time }} минут</p>
+
+{% if recipe.categories.exists %}
+<p><strong>Категории:</strong> {% for cat in recipe.categories.all %} {{ cat.name }}{% if not forloop.last %}, {% endif %} {% endfor %}
+</p>
+{% endif %} {% if user.is_authenticated and recipe.author == user %}
+<a href="{% url 'edit_recipe' recipe.pk %}">Редактировать рецепт</a> {% endif %} {% endblock %}

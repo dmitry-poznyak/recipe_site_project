@@ -1,9 +1,10 @@
 from django.shortcuts import render, get_object_or_404, redirect
-from .models import Recipe
+from .models import Recipe, Category
 from .forms import RecipeForm
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import login
+from django.http import HttpResponseForbidden
 import random
 
 
@@ -32,14 +33,19 @@ def add_recipe(request):
 
 @login_required
 def edit_recipe(request, recipe_id):
-    recipe = get_object_or_404(Recipe, id=recipe_id, author=request.user)
+    recipe = get_object_or_404(Recipe, pk=recipe_id)
+
+    if recipe.author != request.user:
+        return HttpResponseForbidden("Вы не можете редактировать этот рецепт.")
+
     if request.method == 'POST':
-        form = RecipeForm(request.POST, request.FILES, instance=recipe)
+        form = RecipeForm(request.POST, instance=recipe)
         if form.is_valid():
             form.save()
-            return redirect('recipe_detail', recipe_id=recipe.id)
+            return redirect('recipe_detail', recipe_id=recipe_id)
     else:
         form = RecipeForm(instance=recipe)
+
     return render(request, 'recipe/edit_recipe.html', {'form': form})
 
 def signup_view(request):
@@ -52,3 +58,23 @@ def signup_view(request):
     else:
         form = UserCreationForm()
     return render(request, 'recipe/signup.html', {'form': form})
+
+def category_recipes(request, category_id):
+    category = get_object_or_404(Category, pk=category_id)
+    recipes = category.recipes.all()
+    return render(request, 'recipe/category_recipes.html', {
+        'category': category,
+        'recipes': recipes
+    })
+
+def register(request):
+    if request.method == 'POST':
+        form = UserCreationForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            login(request, user)
+            return redirect('home')
+    else:
+        form = UserCreationForm()
+    return render(request, 'recipe/register.html', {'form': form})
+
