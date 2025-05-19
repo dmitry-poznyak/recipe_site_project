@@ -1,0 +1,8 @@
+{% extends 'base.html' %} {% block content %}
+<h2>Удалить рецепт "{{ recipe.title }}"?</h2>
+<form method="post">
+    {% csrf_token %}
+    <button type="submit">Да, удалить</button>
+    <a href="{% url 'recipe_detail' recipe.id %}">Отмена</a>
+</form>
+{% endblock %}

@@ -78,3 +78,17 @@ def register(request):
         form = UserCreationForm()
     return render(request, 'recipe/register.html', {'form': form})
 
+@login_required
+def delete_recipe(request, pk):
+    recipe = get_object_or_404(Recipe, pk=pk)
+
+    # Проверяем, что текущий пользователь — автор рецепта
+    if recipe.author != request.user:
+        return HttpResponseForbidden("Вы не можете удалить этот рецепт.")
+
+    if request.method == "POST":
+        recipe.delete()
+        return redirect('home')
+
+    # Если GET — можно показать подтверждение удаления (опционально)
+    return render(request, 'recipe/delete_recipe_confirm.html', {'recipe': recipe})
