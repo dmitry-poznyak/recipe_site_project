@@ -21,10 +21,10 @@ def add_recipe(request):
     if request.method == 'POST':
         form = RecipeForm(request.POST, request.FILES)
         if form.is_valid():
-            recipe = form.save(commit=False)
-            recipe.author = request.user
-            recipe.save()
-            form.save_m2m()
+            recipe = form.save(commit=False)  # Не сохраняем сразу
+            recipe.author = request.user      # Устанавливаем автора
+            recipe.save()                     # Теперь сохраняем
+            form.save_m2m()                   # Сохраняем связи many-to-many
             return redirect('recipe_detail', recipe_id=recipe.id)
     else:
         form = RecipeForm()
