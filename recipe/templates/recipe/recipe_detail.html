@@ -1,17 +1,25 @@
 {% extends 'base.html' %} {% block content %}
-<h1>{{ recipe.title }}</h1>
+<div class="card mb-4 shadow-sm">
+    {% if recipe.image %}
+    <img src="{{ recipe.image.url }}" class="card-img-top img-fluid" alt="Изображение рецепта"> {% endif %}
+    <div class="card-body">
+        <h2 class="card-title">{{ recipe.title }}</h2>
+        <p><strong>Автор:</strong> {{ recipe.author.username }}</p>
 
-{% if recipe.image %}
-<img src="{{ recipe.image.url }}" alt="Изображение рецепта" style="max-width: 400px;"> {% endif %}
+        <p><strong>Описание:</strong> {{ recipe.description }}</p>
 
-<p><strong>Автор:</strong> {{ recipe.author.username }}</p>
-<p><strong>Описание:</strong> {{ recipe.description }}</p>
-<p><strong>Шаги приготовления:</strong> {{ recipe.steps }}</p>
-<p><strong>Время приготовления:</strong> {{ recipe.cooking_time }} минут</p>
+        <p><strong>Шаги приготовления:</strong></p>
+        <p>{{ recipe.steps|linebreaks }}</p>
 
-{% if recipe.categories.exists %}
-<p><strong>Категории:</strong> {% for cat in recipe.categories.all %} {{ cat.name }}{% if not forloop.last %}, {% endif %} {% endfor %}
-</p>
-{% endif %} {% if user.is_authenticated and user == recipe.author %}
-<a href="{% url 'edit_recipe' recipe.id %}">Редактировать</a> |
-<a href="{% url 'delete_recipe' recipe.id %}">Удалить</a> {% endif %} {% endblock %}
+        <p><strong>Время приготовления:</strong> {{ recipe.cooking_time }} минут</p>
+
+        {% if recipe.categories.exists %}
+        <p><strong>Категории:</strong> {% for cat in recipe.categories.all %}
+            <span class="badge bg-secondary me-1">{{ cat.name }}</span> {% endfor %}
+        </p>
+        {% endif %} {% if user.is_authenticated and user == recipe.author %}
+        <a href="{% url 'edit_recipe' recipe.id %}" class="btn btn-warning btn-sm">Редактировать</a>
+        <a href="{% url 'delete_recipe' recipe.id %}" class="btn btn-danger btn-sm ms-2">Удалить</a> {% endif %}
+    </div>
+</div>
+{% endblock %}

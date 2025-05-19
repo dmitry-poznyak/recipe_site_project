@@ -1,12 +1,16 @@
 {% extends 'base.html' %} {% block content %}
-<h1>Рецепты категории: {{ category.name }}</h1>
+<div class="container mt-4">
+    <h1 class="mb-4">Рецепты категории: {{ category.name }}</h1>
 
-<ul>
-    {% for recipe in recipes %}
-    <li>
-        <a href="{% url 'recipe_detail' recipe.id %}">{{ recipe.title }}</a><br>
-        <small>{{ recipe.description|truncatewords:15 }}</small>
-    </li>
-    {% endfor %}
-</ul>
+    <div class="list-group">
+        {% for recipe in recipes %}
+        <a href="{% url 'recipe_detail' recipe.id %}" class="list-group-item list-group-item-action mb-2">
+            <h5 class="mb-1">{{ recipe.title }}</h5>
+            <p class="mb-1 text-truncate">{{ recipe.description|truncatewords:20 }}</p>
+        </a>
+        {% empty %}
+        <p>Рецептов в этой категории пока нет.</p>
+        {% endfor %}
+    </div>
+</div>
 {% endblock %}
