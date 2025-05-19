@@ -1,5 +1,6 @@
 {% extends 'base.html' %} {% block content %}
-<h1>Рецепты</h1>
+
+<h1>Пять случайныйх рецептов</h1>
 <div class="row row-cols-1 row-cols-md-3 g-4">
     {% for recipe in recipes %}
     <div class="col">
@@ -8,7 +9,7 @@
             <img src="{{ recipe.image.url }}" class="card-img-top" alt="{{ recipe.title }}"> {% endif %}
             <div class="card-body d-flex flex-column">
                 <h5 class="card-title">{{ recipe.title }}</h5>
-                <p class="card-text" style="display: -webkit-box; -webkit-line-clamp: 4; -webkit-box-orient: vertical; overflow: hidden;">
+                <p class="card-text" style="display: -webkit-box; -webkit-line-clamp: 6; -webkit-box-orient: vertical; overflow: hidden;">
                     {{ recipe.description }}
                 </p>
                 <a href="{% url 'recipe_detail' recipe.id %}" class="btn btn-primary mt-auto align-self-start">Подробнее</a>
@@ -23,6 +24,7 @@
     {% endfor %}
 </div>
 
+{% if is_paginated %}
 <nav aria-label="Page navigation example" class="mt-4">
     <ul class="pagination justify-content-center">
         {% if page_obj.has_previous %}
@@ -52,4 +54,4 @@
         {% endif %}
     </ul>
 </nav>
-{% endblock %}
+{% endif %} {% endblock %}

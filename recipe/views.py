@@ -93,3 +93,19 @@ def delete_recipe(request, pk):
 
     # Если GET — можно показать подтверждение удаления (опционально)
     return render(request, 'recipe/delete_recipe_confirm.html', {'recipe': recipe})
+
+def recipe_list(request):
+    recipe_list = Recipe.objects.all()
+    paginator = Paginator(recipe_list, 9)  # 9 рецептов на страницу
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+    return render(request, 'recipe/recipe_list.html', {'page_obj': page_obj})
+
+@login_required
+def my_recipes(request):
+    recipes = Recipe.objects.filter(author=request.user)
+    return render(request, 'recipe/my_recipes.html', {'recipes': recipes})
+
+def categories_context(request):
+    categories = Category.objects.all()
+    return {'categories': categories}

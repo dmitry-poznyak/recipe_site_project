@@ -1,11 +1,11 @@
 {% extends 'base.html' %} {% block content %}
 <div class="container mt-4">
-    <h1 class="mb-4">{{ category.name }}</h1>
+    <h1 class="mb-4">Мои рецепты</h1>
 
     <div class="row row-cols-1 row-cols-md-3 g-4">
         {% for recipe in recipes %}
         <div class="col">
-            <div class="card h-100">
+            <div class="card h-100 shadow-sm">
                 {% if recipe.image %}
                 <img src="{{ recipe.image.url }}" class="card-img-top" alt="{{ recipe.title }}"> {% endif %}
                 <div class="card-body d-flex flex-column">
@@ -16,7 +16,7 @@
             </div>
         </div>
         {% empty %}
-        <p>Рецептов в этой категории пока нет.</p>
+        <p>Вы ещё не добавили ни одного рецепта.</p>
         {% endfor %}
     </div>
 </div>
