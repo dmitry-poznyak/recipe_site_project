@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Recipe Site</title>
+</head>
+
+<body>
+    <h1><a href="{% url 'home' %}">Сайт рецептов</a></h1>
+    {% if user.is_authenticated %} Привет, {{ user.username }} |
+    <a href="{% url 'logout' %}">Выйти</a> |
+    <a href="{% url 'add_recipe' %}">Добавить рецепт</a> {% else %}
+    <a href="{% url 'login' %}">Войти</a> |
+    <a href="{% url 'signup' %}">Регистрация</a> {% endif %}
+    <hr> {% block content %}{% endblock %}
+</body>
+
+</html>
