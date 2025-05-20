@@ -1,16 +1,22 @@
 {% extends 'base.html' %} {% block content %}
 <div class="card mb-4 shadow-sm">
     {% if recipe.image %}
-    <img src="{{ recipe.image.url }}" class="card-img-top img-fluid" alt="Изображение рецепта"> {% endif %}
+    <img src="{{ recipe.image.url }}" class="card-img-top img-fluid" alt="Изображение рецепта" style="max-height: 300px; object-fit: cover; width: 100%;"> {% endif %}
     <div class="card-body">
-        <h2 class="card-title">{{ recipe.title }}</h2>
+        <h2 class="card-title d-flex justify-content-between align-items-center">
+            {{ recipe.title }} {% if user.is_authenticated %}
+            <form method="post" action="{% url 'toggle_favorite' recipe.id %}">
+                {% csrf_token %} {% if recipe in favorite_recipes %}
+                <button type="submit" class="btn btn-sm btn-outline-danger">Удалить ♥</button> {% else %}
+                <button type="submit" class="btn btn-sm btn-outline-primary">В избранное 🤍</button> {% endif %}
+            </form>
+            {% endif %}
+        </h2>
+
         <p><strong>Автор:</strong> {{ recipe.author.username }}</p>
-
         <p><strong>Описание:</strong> {{ recipe.description }}</p>
-
         <p><strong>Шаги приготовления:</strong></p>
         <p>{{ recipe.steps|linebreaks }}</p>
-
         <p><strong>Время приготовления:</strong> {{ recipe.cooking_time }} минут</p>
 
         {% if recipe.categories.exists %}

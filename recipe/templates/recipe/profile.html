@@ -1,0 +1,101 @@
+{% extends "base.html" %} {% block content %}
+
+<div class="container mt-4">
+
+    <!-- Вкладки -->
+    <div class="btn-group mb-4" role="group" aria-label="Рецепты">
+        <button id="btn-user-recipes" type="button" class="btn btn-primary">Ваши рецепты</button>
+        <button id="btn-favorite-recipes" type="button" class="btn btn-outline-primary">Избранные рецепты</button>
+    </div>
+
+    <!-- Секции с карточками -->
+    <div id="user-recipes-section" class="row row-cols-1 row-cols-md-3 g-4">
+        {% for recipe in user_recipes %}
+        <div class="col">
+            <div class="card h-100 shadow-sm d-flex flex-column">
+                {% if recipe.image %}
+                <img src="{{ recipe.image.url }}" class="card-img-top" alt="{{ recipe.title }}" style="height: 200px; object-fit: cover;"> {% endif %}
+                <div class="card-body d-flex flex-column">
+                    <h5 class="card-title">{{ recipe.title }}</h5>
+                    <p class="mb-2 text-muted small">
+                        ⏱ {{ recipe.cooking_time }} мин &nbsp;&nbsp;|&nbsp;&nbsp; 📂 {% for category in recipe.categories.all %} {{ category.name }}{% if not forloop.last %}, {% endif %} {% empty %} Без категории {% endfor %}
+                    </p>
+                    <p class="card-text" style="display: -webkit-box; -webkit-line-clamp: 4; -webkit-box-orient: vertical; overflow: hidden;">
+                        {{ recipe.description }}
+                    </p>
+                </div>
+                <div class="card-footer d-flex justify-content-between align-items-center">
+                    <a href="{% url 'recipe_detail' recipe.id %}" class="btn btn-primary btn-sm">Подробнее</a> {% if user.is_authenticated %}
+                    <form method="post" action="{% url 'toggle_favorite' recipe.id %}">
+                        {% csrf_token %} {% if recipe in favorite_recipes %}
+                        <button type="submit" class="btn btn-outline-danger btn-sm">Удалить ♥</button> {% else %}
+                        <button type="submit" class="btn btn-outline-primary btn-sm">В избранное 🤍</button> {% endif %}
+                    </form>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <p>Нет опубликованных рецептов</p>
+        {% endfor %}
+    </div>
+
+    <div id="favorite-recipes-section" class="row row-cols-1 row-cols-md-3 g-4" style="display:none;">
+        {% for recipe in favorite_recipes %}
+        <div class="col">
+            <div class="card h-100 shadow-sm d-flex flex-column">
+                {% if recipe.image %}
+                <img src="{{ recipe.image.url }}" class="card-img-top" alt="{{ recipe.title }}" style="height: 200px; object-fit: cover;"> {% endif %}
+                <div class="card-body d-flex flex-column">
+                    <h5 class="card-title">{{ recipe.title }}</h5>
+                    <p class="mb-2 text-muted small">
+                        ⏱ {{ recipe.cooking_time }} мин &nbsp;&nbsp;|&nbsp;&nbsp; 📂 {% for category in recipe.categories.all %} {{ category.name }}{% if not forloop.last %}, {% endif %} {% empty %} Без категории {% endfor %}
+                    </p>
+                    <p class="card-text" style="display: -webkit-box; -webkit-line-clamp: 4; -webkit-box-orient: vertical; overflow: hidden;">
+                        {{ recipe.description }}
+                    </p>
+                </div>
+                <div class="card-footer d-flex justify-content-between align-items-center">
+                    <a href="{% url 'recipe_detail' recipe.id %}" class="btn btn-primary btn-sm">Подробнее</a> {% if user.is_authenticated %}
+                    <form method="post" action="{% url 'toggle_favorite' recipe.id %}">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-outline-danger btn-sm">Удалить ♥</button>
+                    </form>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <p>Нет избранных рецептов</p>
+        {% endfor %}
+    </div>
+</div>
+
+<script>
+    const btnUser = document.getElementById('btn-user-recipes');
+    const btnFavorite = document.getElementById('btn-favorite-recipes');
+    const sectionUser = document.getElementById('user-recipes-section');
+    const sectionFavorite = document.getElementById('favorite-recipes-section');
+
+    btnUser.addEventListener('click', () => {
+        btnUser.classList.add('btn-primary');
+        btnUser.classList.remove('btn-outline-primary');
+        btnFavorite.classList.remove('btn-primary');
+        btnFavorite.classList.add('btn-outline-primary');
+
+        sectionUser.style.display = 'flex';
+        sectionFavorite.style.display = 'none';
+    });
+
+    btnFavorite.addEventListener('click', () => {
+        btnFavorite.classList.add('btn-primary');
+        btnFavorite.classList.remove('btn-outline-primary');
+        btnUser.classList.remove('btn-primary');
+        btnUser.classList.add('btn-outline-primary');
+
+        sectionFavorite.style.display = 'flex';
+        sectionUser.style.display = 'none';
+    });
+</script>
+
+{% endblock %}

@@ -36,6 +36,11 @@
         .breadcrumb {
             margin-bottom: 1rem;
         }
+        
+        .recipe-img {
+            height: 200px;
+            object-fit: cover;
+        }
     </style>
 </head>
 
@@ -77,8 +82,9 @@
                             {{ user.username }}
                         </a>
                         <ul class="dropdown-menu dropdown-menu-end">
+                            <li><a class="dropdown-item" href="{% url 'profile' %}">Профиль</a></li>
                             <li><a class="dropdown-item" href="{% url 'add_recipe' %}">Добавить рецепт</a></li>
-                            <li><a class="dropdown-item" href="{% url 'my_recipes' %}">Мои рецепты</a></li>
+                            <!-- <-- Добавлено -->
                             <li>
                                 <hr class="dropdown-divider">
                             </li>

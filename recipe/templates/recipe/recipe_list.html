@@ -4,18 +4,33 @@
     <div class="row row-cols-1 row-cols-md-3 g-4">
         {% for recipe in page_obj %}
         <div class="col">
-            <div class="card h-100 shadow-sm">
+            <div class="card h-100 shadow-sm d-flex flex-column">
                 {% if recipe.image %}
-                <img src="{{ recipe.image.url }}" class="card-img-top" alt="{{ recipe.title }}"> {% endif %}
+                <img src="{{ recipe.image.url }}" class="card-img-top" alt="{{ recipe.title }}" style="height: 200px; object-fit: cover;"> {% endif %}
                 <div class="card-body d-flex flex-column">
                     <h5 class="card-title">{{ recipe.title }}</h5>
-                    <p class="card-text text-truncate" style="-webkit-line-clamp: 5; display: -webkit-box; -webkit-box-orient: vertical; overflow: hidden;">
+
+                    <!-- Время готовки и категория -->
+                    <p class="mb-2 text-muted small">
+                        ⏱ {{ recipe.cooking_time }} мин &nbsp;&nbsp;|&nbsp;&nbsp; 📂 {% for category in recipe.categories.all %} {{ category.name }}{% if not forloop.last %}, {% endif %} {% empty %} Без категории {% endfor %}
+                    </p>
+
+                    <p class="card-text" style="display: -webkit-box; -webkit-line-clamp: 4; -webkit-box-orient: vertical; overflow: hidden;">
                         {{ recipe.description }}
                     </p>
-                    <a href="{% url 'recipe_detail' recipe.id %}" class="btn btn-primary mt-auto align-self-start">Подробнее</a>
+
+                    <!-- Автор прижат вниз -->
+                    <small class="text-muted mt-auto">Автор: {{ recipe.author.username }}</small>
                 </div>
-                <div class="card-footer text-muted small">
-                    Автор: {{ recipe.author.username }}
+
+                <div class="card-footer d-flex justify-content-between align-items-center">
+                    <a href="{% url 'recipe_detail' recipe.id %}" class="btn btn-primary btn-sm">Подробнее</a> {% if user.is_authenticated %}
+                    <form method="post" action="{% url 'toggle_favorite' recipe.id %}">
+                        {% csrf_token %} {% if recipe in favorite_recipes %}
+                        <button type="submit" class="btn btn-outline-danger btn-sm">Удалить ♥</button> {% else %}
+                        <button type="submit" class="btn btn-outline-primary btn-sm">В избранное 🤍</button> {% endif %}
+                    </form>
+                    {% endif %}
                 </div>
             </div>
         </div>

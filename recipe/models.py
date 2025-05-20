@@ -21,4 +21,12 @@ class Recipe(models.Model):
     def __str__(self):
         return self.title
 
+class Favorite(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='favorites')
+    recipe = models.ForeignKey('Recipe', on_delete=models.CASCADE, related_name='favorited_by')
 
+    class Meta:
+        unique_together = ('user', 'recipe')  # Один пользователь не может добавить рецепт дважды
+
+    def __str__(self):
+        return f"{self.user.username} ♥ {self.recipe.title}"
