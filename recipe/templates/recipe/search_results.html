@@ -1,0 +1,12 @@
+{% extends 'base.html' %} {% block content %}
+<h2 class="mb-4">Результаты поиска</h2>
+
+{% if recipes %}
+<div class="row row-cols-1 row-cols-md-3 g-4">
+    {% for recipe in recipes %} {% include 'recipe/recipe_card.html' %} {% empty %}
+    <p>Рецептов пока нет.</p>
+    {% endfor %}
+</div>
+{% else %}
+<p>По вашему запросу ничего не найдено.</p>
+{% endif %} {% endblock %}

@@ -3,6 +3,9 @@
 <html lang="ru">
 
 <head>
+
+
+
     <meta charset="UTF-8" />
     <title>Сайт рецептов</title>
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
@@ -13,7 +16,7 @@
     <link rel="shortcut icon" href="{% static 'favicon.ico' %}" type="image/x-icon">
 
     <style>
-        /* Пункт 3: фиксируем меню сверху */
+        /* фиксируем меню сверху */
         
         body {
             padding-top: 70px;
@@ -26,14 +29,13 @@
             width: 100%;
             z-index: 1030;
         }
-        /* Пункт 4: подсветка активной ссылки */
+        /* подсветка активной ссылки */
         
         .nav-link.active,
         .dropdown-item.active {
             background-color: rgba(255, 255, 255, 0.25);
             border-radius: 0.25rem;
         }
-        /* Дополнительно: плавное скрытие хлебных крошек, если нет */
         
         .breadcrumb {
             margin-bottom: 1rem;
@@ -47,7 +49,7 @@
 </head>
 
 <body>
-    <!-- Пункт 3: добавляем класс fixed-top -->
+    <!-- добавляем класс fixed-top -->
     <nav class="navbar navbar-expand-lg navbar-dark bg-primary fixed-top">
         <div class="container">
             <a class="navbar-brand fw-bold fs-4" href="{% url 'home' %}">Сайт рецептов</a>
@@ -58,13 +60,13 @@
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto align-items-center">
 
-                    <!-- Пункт 1: выпадающий список для Категорий -->
+                    <!-- выпадающий список для Категорий -->
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle {% if request.resolver_match.url_name == 'category_recipes' %}active{% endif %}" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                             Категории
                         </a>
                         <ul class="dropdown-menu dropdown-menu-end">
-                            <!-- Тут можно динамически подгрузить категории из контекста -->
+                            <!-- можно динамически подгрузить категории из контекста -->
                             {% if categories %} {% for category in categories %}
                             <li><a class="dropdown-item" href="{% url 'category_recipes' category.id %}">{{ category.name }}</a></li>
                             {% endfor %} {% else %}
@@ -86,7 +88,6 @@
                         <ul class="dropdown-menu dropdown-menu-end">
                             <li><a class="dropdown-item" href="{% url 'profile' %}">Профиль</a></li>
                             <li><a class="dropdown-item" href="{% url 'add_recipe' %}">Добавить рецепт</a></li>
-                            <!-- <-- Добавлено -->
                             <li>
                                 <hr class="dropdown-divider">
                             </li>
@@ -107,15 +108,17 @@
                     </li>
                     {% endif %}
                 </ul>
+                <form action="{% url 'search_recipes' %}" method="get" class="d-flex" style="max-width: 300px;">
+                    <input type="search" name="q" class="form-control me-2" placeholder="Найти рецепт...">
+                    <button class="btn btn-outline-light" type="submit">🔍</button>
+                </form>
             </div>
+        </div>
         </div>
     </nav>
 
-    <!-- Пункт 6: хлебные крошки -->
     <div class="container mt-3">
-        {% block breadcrumbs %}
-        <!-- По умолчанию пусто, можно переопределить в дочерних шаблонах -->
-        {% endblock %}
+        {% block breadcrumbs %} {% endblock %}
     </div>
 
     <main class="container mt-3 mb-5">

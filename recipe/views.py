@@ -169,6 +169,10 @@ def toggle_favorite(request, recipe_id):
     favorite, created = Favorite.objects.get_or_create(user=request.user, recipe=recipe)
     if not created:
         favorite.delete()
-    return redirect('profile')  # Возврат на профиль без табов
+    return redirect('profile')
 
 
+def search_recipes(request):
+    query = request.GET.get('q')
+    recipes = Recipe.objects.filter(title__icontains=query) if query else []
+    return render(request, 'recipe/search_results.html', {'recipes': recipes, 'query': query})
