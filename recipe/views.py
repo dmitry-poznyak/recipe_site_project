@@ -34,7 +34,15 @@ def home(request):
 
 def recipe_detail(request, recipe_id):
     recipe = get_object_or_404(Recipe, id=recipe_id)
-    return render(request, 'recipe/recipe_detail.html', {'recipe': recipe})
+
+    is_favorite = False
+    if request.user.is_authenticated:
+        is_favorite = Favorite.objects.filter(user=request.user, recipe=recipe).exists()
+
+    return render(request, 'recipe/recipe_detail.html', {
+        'recipe': recipe,
+        'is_favorite': is_favorite,
+    })
 
 
 @login_required
