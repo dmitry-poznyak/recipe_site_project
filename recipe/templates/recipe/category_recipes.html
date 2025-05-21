@@ -3,7 +3,7 @@
     <h1 class="mb-4">{{ category.name }}</h1>
 
     <div class="row row-cols-1 row-cols-md-3 g-4">
-        {% for recipe in recipes %} {% include 'recipe/recipe_card.html' %} {% empty %}
+        {% for recipe in page_obj %} {% include 'recipe/recipe_card.html' %} {% empty %}
         <p>Рецептов пока нет.</p>
         {% endfor %}
     </div>

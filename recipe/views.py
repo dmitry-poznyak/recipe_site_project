@@ -12,9 +12,25 @@ from .forms import RecipeForm
 
 def home(request):
     recipes = list(Recipe.objects.all())
-    random_recipes = random.sample(recipes, min(len(recipes), 5))
-    return render(request, 'recipe/home.html', {'recipes': random_recipes})
 
+    # Выбор случайных 5 рецептов
+    random_recipes = random.sample(recipes, min(len(recipes), 5))
+
+    # Получаем избранные рецепты текущего пользователя
+    favorite_recipe_ids = set()
+    if request.user.is_authenticated:
+        favorite_recipe_ids = set(
+            Favorite.objects.filter(user=request.user).values_list('recipe_id', flat=True)
+        )
+
+    # Отмечаем, какие из случайных рецептов в избранном
+    for recipe in random_recipes:
+        recipe.is_favorite = recipe.id in favorite_recipe_ids
+
+    return render(request, 'recipe/home.html', {
+        'recipes': random_recipes,
+        'favorite_recipes': Recipe.objects.filter(id__in=favorite_recipe_ids)
+    })
 
 def recipe_detail(request, recipe_id):
     recipe = get_object_or_404(Recipe, id=recipe_id)
@@ -102,18 +118,26 @@ def category_recipes(request, category_id):
     category = get_object_or_404(Category, pk=category_id)
     recipes = Recipe.objects.filter(categories=category).prefetch_related('favorited_by')
 
+    # Получаем ID рецептов, добавленных в избранное
     favorite_recipe_ids = set()
     if request.user.is_authenticated:
         favorite_recipe_ids = set(
             Favorite.objects.filter(user=request.user).values_list('recipe_id', flat=True)
         )
 
+    # Помечаем каждый рецепт как избранный или нет
     for recipe in recipes:
         recipe.is_favorite = recipe.id in favorite_recipe_ids
 
+    # Пагинация — 9 рецептов на страницу
+    paginator = Paginator(recipes, 9)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
     return render(request, 'recipe/category_recipes.html', {
         'category': category,
-        'recipes': recipes
+        'page_obj': page_obj,
+        'favorite_recipes': Recipe.objects.filter(id__in=favorite_recipe_ids)
     })
 
 
@@ -134,7 +158,11 @@ def recipe_list(request):
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
 
-    return render(request, 'recipe/recipe_list.html', {'page_obj': page_obj})
+    return render(request, 'recipe/recipe_list.html', {
+    'page_obj': page_obj,
+    'favorite_recipes': Recipe.objects.filter(id__in=favorite_recipe_ids)
+})
+
 
 
 def categories_context(request):
@@ -169,10 +197,25 @@ def toggle_favorite(request, recipe_id):
     favorite, created = Favorite.objects.get_or_create(user=request.user, recipe=recipe)
     if not created:
         favorite.delete()
-    return redirect('profile')
+    return redirect(request.META.get('HTTP_REFERER', 'home'))
 
 
 def search_recipes(request):
     query = request.GET.get('q')
-    recipes = Recipe.objects.filter(title__icontains=query) if query else []
-    return render(request, 'recipe/search_results.html', {'recipes': recipes, 'query': query})
+    recipes = Recipe.objects.filter(title__icontains=query).prefetch_related('favorited_by') if query else []
+
+    favorite_recipe_ids = set()
+    if request.user.is_authenticated:
+        favorite_recipe_ids = set(
+            Favorite.objects.filter(user=request.user).values_list('recipe_id', flat=True)
+        )
+
+    for recipe in recipes:
+        recipe.is_favorite = recipe.id in favorite_recipe_ids
+
+    return render(request, 'recipe/search_results.html', {
+        'recipes': recipes,
+        'query': query,
+        'favorite_recipes': Recipe.objects.filter(id__in=favorite_recipe_ids)
+    })
+
