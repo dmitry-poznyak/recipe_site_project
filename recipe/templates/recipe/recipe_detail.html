@@ -15,11 +15,24 @@
 
         <p><strong>Автор:</strong> {{ recipe.author.username }}</p>
         <p><strong>Описание:</strong> {{ recipe.description }}</p>
+
+        {% if recipe.ingredients.all %}
+        <p><strong>Ингредиенты:</strong></p>
+        <ul>
+            {% for ingredient in recipe.ingredients.all %}
+            <li>{{ ingredient.name }}</li>
+            {% endfor %}
+        </ul>
+        {% else %}
+        <p><strong>Ингредиенты:</strong> ингредиенты не указаны.</p>
+        {% endif %}
+
         <p><strong>Шаги приготовления:</strong></p>
         <p>{{ recipe.steps|linebreaks }}</p>
+
         <p><strong>Время приготовления:</strong> {{ recipe.cooking_time }} минут</p>
 
-        {% if recipe.categories.exists %}
+        {% if recipe.categories.all %}
         <p><strong>Категории:</strong> {% for cat in recipe.categories.all %}
             <span class="badge bg-secondary me-1">{{ cat.name }}</span> {% endfor %}
         </p>
