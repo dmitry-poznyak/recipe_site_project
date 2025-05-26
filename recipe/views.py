@@ -52,6 +52,7 @@ def add_recipe(request):
         if form.is_valid():
             recipe = form.save(commit=False)
             recipe.author = request.user
+            recipe.ingredients = form.cleaned_data.get('ingredients', '')
             recipe.save()
             form.save_m2m()
             return redirect('recipe_detail', recipe_id=recipe.id)
@@ -68,9 +69,12 @@ def edit_recipe(request, recipe_id):
         return HttpResponseForbidden("Вы не можете редактировать этот рецепт.")
 
     if request.method == 'POST':
-        form = RecipeForm(request.POST, instance=recipe)
+        form = RecipeForm(request.POST, request.FILES, instance=recipe)
         if form.is_valid():
-            form.save()
+            recipe = form.save(commit=False)
+            recipe.ingredients = form.cleaned_data.get('ingredients', '')
+            recipe.save()
+            form.save_m2m()
             return redirect('recipe_detail', recipe_id=recipe_id)
     else:
         form = RecipeForm(instance=recipe)

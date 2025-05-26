@@ -16,13 +16,9 @@
         <p><strong>Автор:</strong> {{ recipe.author.username }}</p>
         <p><strong>Описание:</strong> {{ recipe.description }}</p>
 
-        {% if recipe.ingredients.all %}
+        {% if recipe.ingredients %}
         <p><strong>Ингредиенты:</strong></p>
-        <ul>
-            {% for ingredient in recipe.ingredients.all %}
-            <li>{{ ingredient.name }}</li>
-            {% endfor %}
-        </ul>
+        <p>{{ recipe.ingredients|linebreaks }}</p>
         {% else %}
         <p><strong>Ингредиенты:</strong> ингредиенты не указаны.</p>
         {% endif %}
