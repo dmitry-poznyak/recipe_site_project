@@ -2,8 +2,8 @@ services:
   - type: web
     name: recipe-site
     env: python
-    region: oregon   # или другой регион Render, например, frankfurt
-    plan: starter    # можно изменить в зависимости от потребностей
+    region: oregon
+    plan: starter
     buildCommand: |
       pip install -r requirements.txt
       python manage.py migrate --noinput
@@ -18,3 +18,5 @@ services:
         value: your-api-key
       - key: CLOUDINARY_API_SECRET
         value: your-api-secret
+      - key: DATABASE_URL
+        value: postgresql://recipe_site_project_v1_user:9aP9G9GSYKpuBxDxCIWeWkdOlnUttEXw@dpg-d0q8ieali9vc73b9h6j0-a.oregon-postgres.render.com/recipe_site_project_v1
