@@ -12,21 +12,6 @@ from django.contrib.auth.models import User
 from django.http import HttpResponse
 
 
-def reset_admin_password(request):
-    try:
-        user = User.objects.get(username='admin')
-        user.set_password('NewStrongPassword123')
-        user.save()
-        return HttpResponse('Пароль суперпользователя обновлён.')
-    except User.DoesNotExist:
-        return HttpResponse('Пользователь admin не найден.')
-    
-def create_admin_user(request):
-    if not User.objects.filter(username='admin').exists():
-        User.objects.create_superuser('admin', 'admin@example.com', 'adminpassword123')
-        return HttpResponse('Суперпользователь создан')
-    return HttpResponse('Суперпользователь уже существует')
-
 def home(request):
     recipes = list(Recipe.objects.all())
 
