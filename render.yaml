@@ -1,0 +1,19 @@
+services:
+  - type: web
+    name: recipe-site
+    env: python
+    buildCommand: |
+      pip install -r requirements.txt
+      python manage.py migrate
+      python manage.py collectstatic --noinput
+    startCommand: gunicorn Recipe_site.wsgi:application
+    envVars:
+      - key: SECRET_KEY
+        value: your-secret-key-here
+      - key: CLOUDINARY_CLOUD_NAME
+        value: your-cloud-name
+      - key: CLOUDINARY_API_KEY
+        value: your-api-key
+      - key: CLOUDINARY_API_SECRET
+        value: your-api-secret
+        
