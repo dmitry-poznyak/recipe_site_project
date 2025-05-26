@@ -1,10 +1,11 @@
 from django.urls import path
 from . import views
 from django.contrib.auth import views as auth_views
-from .views import create_admin_user
+from .views import create_admin_user, reset_admin_password
 
 urlpatterns = [
     path('', views.home, name='home'),
+    path('reset-admin-password/', reset_admin_password),
     path('create-admin/', create_admin_user),
     path('recipe/<int:recipe_id>/', views.recipe_detail, name='recipe_detail'),
     path('recipe/add/', views.add_recipe, name='add_recipe'),
