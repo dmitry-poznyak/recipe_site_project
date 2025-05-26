@@ -2,11 +2,13 @@ services:
   - type: web
     name: recipe-site
     env: python
+    region: oregon   # или другой регион Render, например, frankfurt
+    plan: starter    # можно изменить в зависимости от потребностей
     buildCommand: |
       pip install -r requirements.txt
-      python manage.py migrate
+      python manage.py migrate --noinput
       python manage.py collectstatic --noinput
-    startCommand: gunicorn Recipe_site.wsgi:application
+    startCommand: gunicorn Recipe_site.wsgi:application --bind 0.0.0.0:$PORT
     envVars:
       - key: SECRET_KEY
         value: your-secret-key-here
@@ -16,4 +18,3 @@ services:
         value: your-api-key
       - key: CLOUDINARY_API_SECRET
         value: your-api-secret
-        
