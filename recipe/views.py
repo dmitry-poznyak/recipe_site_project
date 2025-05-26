@@ -8,7 +8,15 @@ import random
 from urllib.parse import urlparse, parse_qs, urlencode, urlunparse
 from .models import Recipe, Category, Favorite
 from .forms import RecipeForm
+from django.contrib.auth.models import User
+from django.http import HttpResponse
 
+
+def create_admin_user(request):
+    if not User.objects.filter(username='admin').exists():
+        User.objects.create_superuser('admin', 'admin@example.com', 'adminpassword123')
+        return HttpResponse('Суперпользователь создан')
+    return HttpResponse('Суперпользователь уже существует')
 
 def home(request):
     recipes = list(Recipe.objects.all())
