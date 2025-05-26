@@ -4,12 +4,6 @@ from django.contrib.auth import views as auth_views
 from django.contrib.auth import get_user_model
 from django.http import HttpResponse
 
-def create_superuser(request):
-    User = get_user_model()
-    if not User.objects.filter(is_superuser=True).exists():
-        User.objects.create_superuser(username='admin2', email='admin2@example.com', password='AdminPassword123')
-        return HttpResponse("✅ Новый суперпользователь создан: admin2 / AdminPassword123")
-    return HttpResponse("⚠️ Суперпользователь уже существует.")
 
 urlpatterns = [
     path('', views.home, name='home'),
@@ -27,7 +21,4 @@ urlpatterns = [
     path('profile/', views.profile_view, name='profile'),
     path('favorite/<int:recipe_id>/', views.toggle_favorite, name='toggle_favorite'),
     path('search/', views.search_recipes, name='search_recipes'),
-
-    # Временный путь для создания суперпользователя
-    path('create-superuser/', create_superuser),
 ]
