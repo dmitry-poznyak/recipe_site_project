@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+from cloudinary.models import CloudinaryField
 
 class Category(models.Model):
     name = models.CharField(max_length=100)
@@ -18,7 +19,7 @@ class Recipe(models.Model):
     description = models.TextField()
     steps = models.TextField()
     cooking_time = models.PositiveIntegerField()
-    image = models.ImageField(upload_to='recipes/')
+    image = CloudinaryField('image', blank=True, null=True)
     author = models.ForeignKey(User, on_delete=models.CASCADE, related_name='recipes')
     categories = models.ManyToManyField(Category, blank=True, related_name='recipes')
     ingredients = models.TextField(blank=True)
